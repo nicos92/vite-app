@@ -1,4 +1,10 @@
-import { extraerValorCarta, pedirCarta, createDeck } from "./usecases";
+import {
+  mostrarImgCarta,
+  pedirCarta,
+  createDeck,
+  acumularPuntos,
+  insertarPuntajeHTML,
+} from "./usecases";
 
 let deck = [];
 const tipos = ["C", "D", "H", "S"],
@@ -65,7 +71,7 @@ btnPedir.addEventListener("click", () => {
   btnDetener.disabled = false;
   btnNuevo.disabled = false;
   const carta = pedirCarta(deck);
-  acumularPuntos(carta, 0);
+  puntosJugadores[0] = acumularPuntos(carta, puntosJugadores[0]);
   insertarPuntajeHTML(puntosJugadorHTML, puntosJugadores[0]);
   mostrarImgCarta(carta, jugadorCartas);
   calcularPuntajeJuego(puntosJugadores[0]);
@@ -85,23 +91,10 @@ function calcularPuntajeJuego(puntos) {
   }
 }
 
-const insertarPuntajeHTML = (puntosHTML, puntos) => {
-  puntosHTML.innerHTML = puntos;
-};
-const acumularPuntos = (carta, turno) => {
-  puntosJugadores[turno] += extraerValorCarta(carta);
-};
-const mostrarImgCarta = (carta, cartasJugador) => {
-  const imgCarta = document.createElement("img");
-  imgCarta.src = `assets/cartas/${carta}.png`;
-  imgCarta.classList.add("carta");
-  cartasJugador.append(imgCarta);
-};
-
 const turnoComputadora = (puntosMinimos) => {
   do {
     const carta = pedirCarta(deck);
-    acumularPuntos(carta, puntosJugadores.length - 1);
+    puntosJugadores[1] = acumularPuntos(carta, puntosJugadores[1]);
     insertarPuntajeHTML(
       puntosComputadoraHTML,
       puntosJugadores[puntosJugadores.length - 1],
