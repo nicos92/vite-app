@@ -1,6 +1,11 @@
+import { extraerValorCarta, pedirCarta, createDeck } from "./usecases";
+
+let deck = [];
+const tipos = ["C", "D", "H", "S"],
+  especiales = { A: 1, J: 11, Q: 12, K: 13 };
 const inicializarJuego = (numJugadores = 2) => {
   puntosJugadores = [];
-  creatDeck();
+  deck = createDeck(tipos, especiales);
   barajarFisherYates();
 
   for (let i = 0; i < numJugadores; i++) {
@@ -19,25 +24,7 @@ const [puntosJugadorHTML, puntosComputadoraHTML] =
 const jugadorCartas = document.querySelector("#jugador-cartas"),
   computadoraCartas = document.querySelector("#computadora-cartas");
 
-let deck = [];
-const tipos = ["C", "D", "H", "S"],
-  especiales = { A: 1, J: 11, Q: 12, K: 13 };
-
 let puntosJugadores = [];
-const creatDeck = () => {
-  deck = [];
-  for (let i = 2; i <= 10; i++) {
-    for (const tipo of tipos) {
-      deck.push(i + tipo);
-    }
-  }
-
-  for (const tipo of tipos) {
-    for (const clave of Object.keys(especiales)) {
-      deck.push(clave + tipo);
-    }
-  }
-};
 
 function barajar(deck = []) {
   const barajadas = 7;
@@ -56,17 +43,6 @@ function barajarFisherYates() {
     [deck[i], deck[j]] = [deck[j], deck[i]]; // swap
   }
 }
-
-const pedirCarta = () => {
-  if (deck.length === 0) throw "No hay cartas en el deck";
-
-  return deck.pop();
-};
-
-const extraerValorCarta = (carta = "2D") => {
-  const valorCarta = carta.substring(0, carta.length - 1);
-  return isNaN(valorCarta) ? (valorCarta === "A" ? 11 : 10) : valorCarta * 1;
-};
 
 btnNuevo.addEventListener("click", () => {
   inicializarJuego();
@@ -88,7 +64,7 @@ btnDetener.addEventListener("click", () => {
 btnPedir.addEventListener("click", () => {
   btnDetener.disabled = false;
   btnNuevo.disabled = false;
-  const carta = pedirCarta();
+  const carta = pedirCarta(deck);
   acumularPuntos(carta, 0);
   insertarPuntajeHTML(puntosJugadorHTML, puntosJugadores[0]);
   mostrarImgCarta(carta, jugadorCartas);
@@ -124,7 +100,7 @@ const mostrarImgCarta = (carta, cartasJugador) => {
 
 const turnoComputadora = (puntosMinimos) => {
   do {
-    const carta = pedirCarta();
+    const carta = pedirCarta(deck);
     acumularPuntos(carta, puntosJugadores.length - 1);
     insertarPuntajeHTML(
       puntosComputadoraHTML,
