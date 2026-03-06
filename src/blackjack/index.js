@@ -141,5 +141,5 @@ const mostrarCartelGanador = () => {
     ) {
       alert("ganaste");
     }
-  }, 200);
+  }, 400);
 };
